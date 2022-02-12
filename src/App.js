@@ -1,24 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import BackgroundSelector from "./components/BackgroundSelector";
+import Drawer from "./components/Drawer";
 
 function App() {
+  const [image, setImage] = useState(null);
+  const [pos, setPos] = useState({ x: 0, y: 0, w: 0, h: 0 });
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {pos && pos.w && pos.h ? (
+        <Drawer pos={pos} image={image} />
+      ) : (
+        <BackgroundSelector
+          handleImageChange={setImage}
+          handlePosChange={setPos}
+        />
+      )}
+    </>
   );
 }
 

@@ -1,0 +1,16 @@
+.tool {
+    min-width: auto;
+    max-width: none;
+    padding: 4px;
+    margin: 1px;
+}
+.tool:not(:disabled):active {
+    padding: 4px;
+}
+.tool-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+.tool.active{
+    box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080;
+}
