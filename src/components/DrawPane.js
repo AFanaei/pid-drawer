@@ -7,6 +7,7 @@ function DrawPane({
   data,
   selectedTool,
   handleDraw,
+  handleDrawEnd,
   handleDrawCurrent,
   activeShape,
 }) {
@@ -39,9 +40,9 @@ function DrawPane({
   }, [data]);
 
   useEffect(() => {
-    if (activeDrawing.current) {
-      activeDrawing.current.remove();
-    }
+    if (activeDrawing.current) activeDrawing.current.remove();
+    if (!activeShape) return;
+
     activeDrawing.current = paperR.current
       .path(
         (activeShape.currentPoint
@@ -75,7 +76,7 @@ function DrawPane({
           handleDraw(e.pageX - pos.x, e.pageY - pos.y);
         }}
         onDoubleClick={(e) => {
-          handleDraw(e.pageX - pos.x, e.pageY - pos.y, true);
+          handleDrawEnd(e.pageX - pos.x, e.pageY - pos.y);
         }}
         onMouseMove={(e) => {
           if (selectedTool) {
