@@ -32,8 +32,8 @@ function DrawPane({
             .join("")
         )
         .attr({
-          stroke: line.color,
-          "stroke-width": 2,
+          stroke: line.selected ? "#f00" : line.color,
+          "stroke-width": line.selected ? 4 : 2,
           "arrow-end": "classic-wide-long",
         });
     });

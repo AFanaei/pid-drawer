@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Edit, MousePointer } from "react-feather";
-import { useLine } from "./Tools";
+import { useHand, useLine } from "./Tools";
 import DrawPane from "./DrawPane";
 
 import styles from "./Drawer.module.css";
@@ -9,6 +9,7 @@ function Drawer({ pos, image }) {
   const [selectedTool, setSelectedTool] = useState("");
   const [data, setData] = useState({ lines: [] });
   const lineDrawer = useLine({ data, setData });
+  const handDrawer = useHand({ data, setData });
   const tools = {
     line: {
       icon: <Edit />,
@@ -17,7 +18,13 @@ function Drawer({ pos, image }) {
       handleDoubleClick: lineDrawer.handleDoubleClick,
       handleMouseMove: lineDrawer.handleMouseMove,
     },
-    select: { name: "hand", icon: <MousePointer /> },
+    select: {
+      icon: <MousePointer />,
+      activeShape: handDrawer.activeShape,
+      handleClick: handDrawer.handleClick,
+      handleDoubleClick: handDrawer.handleDoubleClick,
+      handleMouseMove: handDrawer.handleMouseMove,
+    },
   };
   return (
     <div>
