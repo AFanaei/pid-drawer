@@ -1,7 +1,7 @@
 import { useCallback, useState, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 
-function Background({ handlePosChange, handleImageChange }) {
+function LoadData({ handleDataChange }) {
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState("");
   const fileInput = useRef(null);
@@ -27,18 +27,11 @@ function Background({ handlePosChange, handleImageChange }) {
       } else {
         const file = fileInput.current.files[0];
         const fr = new FileReader();
-        fr.onload = () => {
-          const img = new Image();
-          img.onload = () => {
-            const left = window.innerWidth / 2 - img.width / 2;
-            const top = window.innerHeight / 2 - img.height / 2;
-            handleImageChange(img);
-            handlePosChange({ x: left, y: top, w: img.width, h: img.height });
-            handleClose();
-          };
-          img.src = fr.result;
+        fr.onload = (e) => {
+          handleDataChange(JSON.parse(e.target.result));
+          handleClose();
         };
-        fr.readAsDataURL(file);
+        fr.readAsText(file);
       }
     },
     [setMessage, fileInput, handleClose]
@@ -47,12 +40,12 @@ function Background({ handlePosChange, handleImageChange }) {
   return (
     <div>
       <button variant="primary" onClick={handleShow}>
-        Load Background
+        Load Data
       </button>
       <Modal show={show} onHide={handleClose}>
         <div className="window" style={{ width: "100%" }}>
           <div className="title-bar">
-            <div className="title-bar-text">Select Image</div>
+            <div className="title-bar-text">Select data</div>
             <div className="title-bar-controls">
               <button aria-label="Close" onClick={handleClose}></button>
             </div>
@@ -76,4 +69,4 @@ function Background({ handlePosChange, handleImageChange }) {
   );
 }
 
-export default Background;
+export default LoadData;

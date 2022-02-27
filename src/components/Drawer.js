@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Edit, MousePointer } from "react-feather";
 import { useHand, useLine } from "./Tools";
 import DrawPane from "./DrawPane";
+import LoadData from "./DataSelector";
 
 import styles from "./Drawer.module.css";
 
@@ -13,10 +14,12 @@ function Drawer({ pos, image }) {
   const tools = {
     line: {
       icon: <Edit />,
+      options: lineDrawer.options,
       activeShape: lineDrawer.activeShape,
       handleClick: lineDrawer.handleClick,
       handleDoubleClick: lineDrawer.handleDoubleClick,
       handleMouseMove: lineDrawer.handleMouseMove,
+      handleKeyDown: lineDrawer.handleKeyDown,
     },
     select: {
       icon: <MousePointer />,
@@ -24,10 +27,12 @@ function Drawer({ pos, image }) {
       handleClick: handDrawer.handleClick,
       handleDoubleClick: handDrawer.handleDoubleClick,
       handleMouseMove: handDrawer.handleMouseMove,
+      handleKeyDown: handDrawer.handleKeyDown,
     },
   };
   return (
     <div>
+      <LoadData handleDataChange={setData} />
       <div className="window" style={{ width: "74px" }}>
         <div className="title-bar">
           <div className="title-bar-text">ToolBox</div>
@@ -46,6 +51,39 @@ function Drawer({ pos, image }) {
           ))}
         </div>
       </div>
+      {selectedTool &&
+      selectedTool === "select" &&
+      tools[selectedTool].activeShape &&
+      tools[tools[selectedTool].activeShape.type].options ? (
+        <div className="window" style={{ width: "74px" }}>
+          <div className="title-bar">
+            <div className="title-bar-text">Options</div>
+          </div>
+          <div className={`${styles["tool-container"]}`}>
+            {tools[tools[selectedTool].activeShape.type].options.map((opt) => {
+              if (opt.type === "select") {
+                return (
+                  <select
+                    className={styles.option}
+                    key={opt.name}
+                    value={opt.value}
+                    style={{ width: "100%" }}
+                    onChange={(e) => {
+                      opt.onChange(e.target.value);
+                    }}
+                  >
+                    {opt.options.map((option) => (
+                      <option key={option.name} value={option.value}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                );
+              }
+            })}
+          </div>
+        </div>
+      ) : null}
       <DrawPane
         pos={pos}
         image={image}
@@ -59,11 +97,16 @@ function Drawer({ pos, image }) {
             ? tools[selectedTool].handleDoubleClick
             : undefined
         }
+        handleKeyDown={
+          selectedTool !== "" ? tools[selectedTool].handleKeyDown : undefined
+        }
         handleDrawCurrent={
           selectedTool !== "" ? tools[selectedTool].handleMouseMove : undefined
         }
         activeShape={
-          selectedTool !== "" ? tools[selectedTool].activeShape : undefined
+          selectedTool !== "" && selectedTool !== "select"
+            ? tools[selectedTool].activeShape
+            : undefined
         }
       />
     </div>

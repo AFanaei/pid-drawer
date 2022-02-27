@@ -10,6 +10,7 @@ function DrawPane({
   handleDrawEnd,
   handleDrawCurrent,
   activeShape,
+  handleKeyDown,
 }) {
   const canvas = useRef(null);
   const paper = useRef(null);
@@ -33,7 +34,9 @@ function DrawPane({
         )
         .attr({
           stroke: line.selected ? "#f00" : line.color,
-          "stroke-width": line.selected ? 4 : 2,
+          "stroke-dasharray":
+            line.style === "dash" && !line.selected ? "-" : "",
+          "stroke-width": line.selected ? 4 : 3,
           "arrow-end": "classic-wide-long",
         });
     });
@@ -54,7 +57,7 @@ function DrawPane({
       )
       .attr({
         stroke: activeShape.color,
-        "stroke-width": 2,
+        "stroke-width": 3,
         "arrow-end": "classic-wide-long",
       });
   }, [activeShape]);
@@ -72,6 +75,7 @@ function DrawPane({
           zIndex: 1,
           display: selectedTool === "" ? "none" : "block",
         }}
+        tabIndex="0"
         onClick={(e) => {
           handleDraw(e.pageX - pos.x, e.pageY - pos.y);
         }}
@@ -82,6 +86,9 @@ function DrawPane({
           if (selectedTool) {
             handleDrawCurrent(e.pageX - pos.x, e.pageY - pos.y);
           }
+        }}
+        onKeyDown={(e) => {
+          handleKeyDown(e.key);
         }}
       ></div>
       <div
