@@ -7,42 +7,6 @@ const ColorOptions = [
   { name: "blue", value: "#4a7fac" },
   { name: "red", value: "#780204" },
 ];
-const convertToPos = (points, variant) => {
-  const res = {
-    l: points[0][0] < points[1][0] ? points[0][0] : points[1][0],
-    t: points[0][1] < points[1][1] ? points[0][1] : points[1][1],
-    w: Math.abs(points[1][0] - points[0][0]),
-    h: Math.abs(points[1][1] - points[0][1]),
-  };
-  if (variant === "valve" || variant === "bps") {
-    res.w = 24;
-    res.h = 24;
-  } else if (variant === "pump") {
-    res.w = 28;
-    res.h = 28;
-  } else if (variant === "indicator") {
-    res.h = 20;
-  } else if (variant === "alarm") {
-    res.w = 76;
-    res.h = 24;
-  }
-  return res;
-};
-const exportData = (filename, data) => {
-  const element = document.createElement("a");
-  element.setAttribute(
-    "href",
-    "data:text/plain;charset=utf-8," + encodeURIComponent(JSON.stringify(data))
-  );
-  element.setAttribute("download", filename);
-
-  element.style.display = "none";
-  document.body.appendChild(element);
-
-  element.click();
-
-  document.body.removeChild(element);
-};
 const useLine = ({ data, setData }) => {
   const [activeShape, setActiveShape] = useState({
     type: "line",
@@ -401,94 +365,6 @@ const useHand = ({ data, setData }) => {
         });
         setActiveShape(undefined);
         setData(newData);
-      } else if (key === "s") {
-        exportData("data.json", data);
-      } else if (key === "e") {
-        const modifiedData = {
-          lines: data.lines.map((p) => ({
-            points: p.points,
-            color: p.color,
-            style: p.style,
-          })),
-        };
-        modifiedData.valves = data.rects
-          .filter((p) => p.content === "valve")
-          .map((p) => {
-            const res = {
-              id: p.id,
-              pos: { ...convertToPos(p.points, p.variant || "valve") },
-            };
-            if (p.linkTo) res.linkTo = parseInt(p.linkTo);
-            if (p.hideLogic) res.hideLogic = p.hideLogic;
-            if (p.rotated) res.rotated = p.rotated;
-            if (p.variant) res.type = p.variant;
-            if (p.variableId) res.variableId = p.variableId;
-            if (p.name) res.name = p.name;
-
-            return res;
-          });
-        modifiedData.equipments = data.rects
-          .filter((p) => p.content === "equipment")
-          .map((p) => {
-            const res = {
-              id: p.id,
-              pos: convertToPos(p.points),
-              image: p.image,
-            };
-
-            return res;
-          });
-        modifiedData.links = data.rects
-          .filter((p) => p.content === "link")
-          .map((p) => {
-            const res = {
-              id: p.id,
-              pos: convertToPos(p.points),
-            };
-            if (p.linkTo) res.to = parseInt(p.linkTo);
-
-            return res;
-          });
-        modifiedData.indicators = data.rects
-          .filter((p) => p.content === "indicator")
-          .map((p) => {
-            const res = {
-              id: p.id,
-              pos: convertToPos(p.points, "indicator"),
-            };
-            if (p.linkTo) res.linkTo = parseInt(p.linkTo);
-            if (p.hideLogic) res.hideLogic = p.hideLogic;
-            if (p.variant) res.type = p.variant;
-            if (p.variableId) res.variableId = p.variableId;
-            if (p.name) res.name = p.name;
-
-            return res;
-          });
-        modifiedData.alarms = data.rects
-          .filter((p) => p.content === "alarm")
-          .map((p) => {
-            const res = {
-              id: p.id,
-              pos: convertToPos(p.points),
-            };
-            if (p.variant) res.type = p.variant;
-            if (p.variableId) res.variableId = p.variableId;
-
-            return res;
-          });
-        modifiedData.sliders = data.rects
-          .filter((p) => p.content === "slider")
-          .map((p) => {
-            const res = {
-              id: p.id,
-              pos: convertToPos(p.points),
-            };
-            if (p.color) res.color = p.color;
-            if (p.variableId) res.variableId = p.variableId;
-
-            return res;
-          });
-        exportData("export.json", modifiedData);
       }
     },
   };

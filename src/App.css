@@ -1,0 +1,9 @@
+.right-nav {
+    display: flex;
+    flex-direction: column;
+    width: 108px;
+    margin-bottom: 16px;
+}
+.right-nav > div > button{
+    width: 100%;
+}

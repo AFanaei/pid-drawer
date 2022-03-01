@@ -2,14 +2,12 @@ import { useState } from "react";
 import { Edit, MousePointer, Edit3 } from "react-feather";
 import { useHand, useLine, useRect } from "./Tools";
 import DrawPane from "./DrawPane";
-import LoadData from "./DataSelector";
 
 import styles from "./Drawer.module.css";
 
-function Drawer({ pos, image }) {
+function Drawer({ pos, image, data, setData }) {
   const [selectedTool, setSelectedTool] = useState("");
   const [showBackground, setShowBackground] = useState(true);
-  const [data, setData] = useState({ lines: [], rects: [] });
   const lineDrawer = useLine({ data, setData });
   const handDrawer = useHand({ data, setData });
   const RectDrawer = useRect({ data, setData });
@@ -43,7 +41,6 @@ function Drawer({ pos, image }) {
   };
   return (
     <div>
-      <LoadData handleDataChange={setData} />
       <button
         variant="primary"
         onClick={() => {

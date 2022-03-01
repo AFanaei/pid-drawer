@@ -1,8 +1,10 @@
 import { useCallback, useState, useRef } from "react";
 import Modal from "react-bootstrap/Modal";
 
-function Background({ handlePosChange, handleImageChange }) {
+function Background({ handleNewPage }) {
   const [show, setShow] = useState(false);
+  const [id, setId] = useState(0);
+  const [parentId, setParentId] = useState(0);
   const [message, setMessage] = useState("");
   const fileInput = useRef(null);
   const handleClose = useCallback(() => setShow(false), [setShow]);
@@ -32,8 +34,17 @@ function Background({ handlePosChange, handleImageChange }) {
           img.onload = () => {
             const left = window.innerWidth / 2 - img.width / 2;
             const top = window.innerHeight / 2 - img.height / 2;
-            handleImageChange(img);
-            handlePosChange({ x: left, y: top, w: img.width, h: img.height });
+            handleNewPage(
+              img,
+              {
+                x: left,
+                y: top,
+                w: img.width,
+                h: img.height,
+              },
+              parseInt(id),
+              parseInt(parentId)
+            );
             handleClose();
           };
           img.src = fr.result;
@@ -41,18 +52,20 @@ function Background({ handlePosChange, handleImageChange }) {
         fr.readAsDataURL(file);
       }
     },
-    [setMessage, fileInput, handleClose, handlePosChange, handleImageChange]
+    [setMessage, fileInput, handleClose, handleNewPage, id, parentId]
   );
 
   return (
-    <div>
-      <button variant="primary" onClick={handleShow}>
-        Load Background
-      </button>
+    <>
+      <div>
+        <button variant="primary" onClick={handleShow}>
+          Create new page
+        </button>
+      </div>
       <Modal show={show} onHide={handleClose}>
-        <div className="window" style={{ width: "100%" }}>
+        <div className="window">
           <div className="title-bar">
-            <div className="title-bar-text">Select Image</div>
+            <div className="title-bar-text">New Page Info</div>
             <div className="title-bar-controls">
               <button aria-label="Close" onClick={handleClose}></button>
             </div>
@@ -60,7 +73,47 @@ function Background({ handlePosChange, handleImageChange }) {
           <div className="window-body">
             <form onSubmit={onSubmit}>
               {message ? <p>{message}</p> : null}
-              <input type="file" ref={fileInput} />
+              <div className="field-row">
+                <label
+                  htmlFor="image"
+                  style={{ width: "50px", justifyContent: "end" }}
+                >
+                  Image
+                </label>
+                <input id="image" type="file" ref={fileInput} />
+              </div>
+              <div className="field-row">
+                <label
+                  htmlFor="id"
+                  style={{ width: "50px", justifyContent: "end" }}
+                >
+                  ID
+                </label>
+                <input
+                  id="id"
+                  type="text"
+                  value={id}
+                  onChange={(e) => {
+                    setId(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="field-row">
+                <label
+                  htmlFor="parentId"
+                  style={{ width: "50px", justifyContent: "end" }}
+                >
+                  Parent
+                </label>
+                <input
+                  id="parentId"
+                  type="text"
+                  value={parentId}
+                  onChange={(e) => {
+                    setParentId(e.target.value);
+                  }}
+                />
+              </div>
               <section
                 className="field-row"
                 style={{ justifyContent: "flex-end" }}
@@ -72,7 +125,7 @@ function Background({ handlePosChange, handleImageChange }) {
           </div>
         </div>
       </Modal>
-    </div>
+    </>
   );
 }
 

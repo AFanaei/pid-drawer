@@ -38,10 +38,12 @@ function LoadData({ handleDataChange }) {
   );
 
   return (
-    <div>
-      <button variant="primary" onClick={handleShow}>
-        Load Data
-      </button>
+    <>
+      <div>
+        <button variant="primary" onClick={handleShow}>
+          Load Data
+        </button>
+      </div>
       <Modal show={show} onHide={handleClose}>
         <div className="window" style={{ width: "100%" }}>
           <div className="title-bar">
@@ -65,7 +67,7 @@ function LoadData({ handleDataChange }) {
           </div>
         </div>
       </Modal>
-    </div>
+    </>
   );
 }
 
