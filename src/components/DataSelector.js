@@ -34,7 +34,7 @@ function LoadData({ handleDataChange }) {
         fr.readAsText(file);
       }
     },
-    [setMessage, fileInput, handleClose]
+    [setMessage, fileInput, handleClose, handleDataChange]
   );
 
   return (

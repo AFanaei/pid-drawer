@@ -41,7 +41,7 @@ function Background({ handlePosChange, handleImageChange }) {
         fr.readAsDataURL(file);
       }
     },
-    [setMessage, fileInput, handleClose]
+    [setMessage, fileInput, handleClose, handlePosChange, handleImageChange]
   );
 
   return (
